@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Shayaan's A‑Level CS Scholarship Roadmap — Static App</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <!-- Add this inside your <head> tag, after the <title> -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Ctext x='50%' y='54%' text-anchor='middle' font-size='34' font-family='Inter,Arial,sans-serif' fill='white'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E">
   <style>
@@ -32,6 +33,7 @@
   transform: scale(1.09) rotate(-2deg);
   box-shadow: 0 8px 24px rgba(79,70,229,0.18);
   background: linear-gradient(90deg, var(--accent) 60%, #06b6d4 100%);
+  color: #fff; /* Make text white for better contrast */
 }
 .btn:active, .pill:active {
   animation: btnPop 0.22s;
@@ -54,6 +56,16 @@
   box-shadow: 0 4px 16px rgba(79,70,229,0.09);
   transform: scale(1.04) translateX(4px);
   background: linear-gradient(90deg,#eef2ff 60%,#f8fbff 100%);
+}
+.secbtn.active {
+  background: linear-gradient(90deg, #4f46e5 60%, #06b6d4 100%);
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(79,70,229,0.13);
+  font-weight: 700;
+  border: 1px solid #4f46e5;
+}
+.secbtn.active > div {
+  color: #fff !important;
 }
 
   main{min-height:60vh}
@@ -147,6 +159,15 @@
   80% { opacity: 1; transform: scale(0.97) rotate(-2deg);}
   100% { opacity: 1; transform: scale(1) rotate(0deg);}
 }
+  h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+header, .btn, .pill, .secbtn, .section-header input.title {
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-weight: 700;
+}
   </style>
 </head>
 <body>
@@ -182,7 +203,7 @@
       <main>
         <div class="card" id="mainCard">
           <div class="section-header">
-            <input id="sectionTitle" class="title" value="Year 1 — AS Level (Foundation)" />
+            <input id="sectionTitle" class="title" value="Year 1 — AS Level" />
             <div style="margin-left:auto;text-align:right">
               <div style="font-size:12px;color:var(--muted)">Section progress</div>
               <div style="margin-top:8px" class="progress" style="width:160px"><i id="sectionBar" style="width:0%"></i></div>
@@ -228,7 +249,7 @@
   <script>
     // ---------- Initial default data ----------
     const DEFAULT = [
-      { id: 'year1', title: 'Year 1 — AS Level (Foundation)', desc: 'Build academic base, start competitions, and create early portfolio.', tasks:[
+      { id: 'year1', title: 'Year 1 — AS Level', desc: 'Build academic base, start competitions, and create early portfolio.', tasks:[
         {id:'t1',text:'Enroll in Mathematics (A-Level)',due:null,done:false},
         {id:'t2',text:'Enroll in Further Mathematics (A-Level)',due:null,done:false},
         {id:'t3',text:'Take Physics (A-Level)',due:null,done:false},
@@ -276,9 +297,10 @@
       data.forEach(s=>{
         if(filter && !(s.title.toLowerCase().includes(filter) || s.tasks.some(t=>t.text.toLowerCase().includes(filter)))) return;
         const b = document.createElement('button');
-        b.className = 'secbtn';
-        b.innerHTML = `<div style="font-weight:600">${s.title}</div><div style="font-size:12px;color:var(--muted)">${progressFor(s)}% · ${s.tasks.length} tasks</div>`;
-        b.onclick = ()=>{ activeId = s.id; loadActive(); }
+        b.className = 'secbtn' + (s.id === activeId ? ' active' : '');
+        b.innerHTML = `<div style="font-weight:600;${s.id === activeId ? 'color:#fff;' : ''}">${s.title}</div>
+                   <div style="font-size:12px;${s.id === activeId ? 'color:#fff;' : 'color:var(--muted);'}">${progressFor(s)}% · ${s.tasks.length} tasks</div>`;
+        b.onclick = ()=>{ activeId = s.id; loadActive(); renderSections(q.value.trim().toLowerCase()); }
         sectionList.appendChild(b);
       });
     }
@@ -332,13 +354,13 @@
     "https://i.imgflip.com/30b1gx.jpg", // Drake meme
     "https://i.imgflip.com/1bij.jpg",   // Distracted boyfriend
     "https://i.imgflip.com/26am.jpg",   // Success Kid
-    "https://i.imgflip.com/2fm6x.jpg",  // Expanding Brain
-    "https://i.imgflip.com/3si4.jpg",   // Leonardo DiCaprio Cheers
-    "https://i.imgur.com/4M7IWwP.gif",  // Thumbs up gif
+    "https://i.imgflip.com/a1opt4.jpg", // Woman Yelling at Cat
+    "https://i.imgflip.com/7dm6ht.jpg",   // Leonardo DiCaprio Cheers
+    "https://i.imgflip.com/3212dk.jpg",
+    "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWYzeDVoYzIya2RyZTF4cHl1eXVvYzMxMHcza2plcjk2ZmtlM3I5MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4ixujvqByuFlvqRWrc/giphy.gif", // Party time
     "https://media.giphy.com/media/111ebonMs90YLu/giphy.gif", // Minions
     "https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif",  // Cat high five
     "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif", // Party parrot
-    "https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" // Confetti
   ];
   const memeUrl = memes[Math.floor(Math.random()*memes.length)];
   const popup = document.createElement('div');
@@ -353,9 +375,9 @@
   popup.style.zIndex = 99999;
   popup.style.padding = '22px 22px 18px 22px';
   popup.style.textAlign = 'center';
-  popup.style.animation = 'popupPop 0.7s cubic-bezier(.4,2,.3,1)';
   popup.style.maxWidth = '370px';
   popup.style.pointerEvents = 'auto';
+  popup.style.opacity = '0';
   popup.innerHTML = `
     <div style="font-size:22px;font-weight:800;margin-bottom:12px;color:#4f46e5;letter-spacing:1px;text-shadow:0 2px 12px #4f46e533;">
       🎉 Congratulations! 🎉
@@ -370,7 +392,10 @@
       onclick="this.parentElement.remove()">Close</button>
   `;
   document.body.appendChild(popup);
-  setTimeout(()=>{ popup.style.transform = 'translate(-50%,-50%) scale(1) rotate(0deg)'; }, 10);
+  setTimeout(()=>{
+    popup.style.opacity = '1';
+    popup.style.transform = 'translate(-50%,-50%) scale(1) rotate(0deg)';
+  }, 10);
   setTimeout(()=>{ if(document.body.contains(popup)) popup.remove(); }, 6000);
 }
 
