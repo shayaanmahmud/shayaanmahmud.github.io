@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shayaan's A‑Level CS Scholarship Roadmap — Static App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#eef2ff; --bg2:#f8fbff; --card:#ffffffbb; --glass:rgba(255, 255, 255, 0.51);
+      --accent:#4f46e5; --muted:#6b7280; --ok:#10b981;
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; margin:0; min-height:100vh; background:radial-gradient(1200px 400px at 10% 10%,var(--bg1),transparent 20%), radial-gradient(800px 300px at 95% 90%,var(--bg2),transparent 20%), linear-gradient(180deg,#f7fbff, #ffffff); color:#0f172a}
+    .wrap{max-width:1100px;margin:28px auto;padding:28px}
+    header{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+    .brand{display:flex;flex-direction:column}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .controls{margin-left:auto;display:flex;gap:8px}
+    .btn{background:var(--accent);color:white;padding:9px 12px;border-radius:10px;border:0;cursor:pointer;box-shadow:0 6px 18px rgba(79,70,229,0.12)}
+    .btn.ghost{background:transparent;color:var(--accent);box-shadow:none;border:1px solid rgba(79,70,229,0.12)}
+
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px}
+    nav.card{background:var(--card);backdrop-filter:blur(6px);padding:16px;border-radius:var(--radius);box-shadow:0 6px 30px rgba(16,24,40,0.06)}
+    .progress{height:10px;background:#eef2ff;border-radius:999px;overflow:hidden}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#06b6d4);width:0%}
+    .search{margin-top:12px}
+    input.search{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eefc}
+    .sections{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+    .secbtn{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;border:1px solid #eef3ff;background:transparent;cursor:pointer}
+
+    main{min-height:60vh}
+    .card{background:var(--card);padding:18px;border-radius:16px;box-shadow:0 10px 30px rgba(2,6,23,0.06);}
+    .section-header{display:flex;gap:16px;align-items:flex-start}
+    .section-header input.title{font-size:20px;font-weight:700;border:0;background:transparent}
+    .desc{margin-top:6px;color:var(--muted)}
+
+    .task-input{display:flex;gap:8px;margin-top:14px}
+    .task-input input{flex:1;padding:10px;border-radius:10px;border:1px solid #e6eefc}
+    .task-input .small{width:145px}
+
+    .tasks{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+    .task{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;border:1px solid #f1f5f9;background:linear-gradient(180deg,rgba(255,255,255,0.7),transparent)}
+    .checkbox{width:34px;height:34px;border-radius:9px;border:1px solid #e6eefc;display:grid;place-items:center;cursor:pointer}
+    .task .meta{flex:1}
+    .task .meta .name{font-weight:600}
+    .task .meta .due{font-size:12px;color:var(--muted);margin-top:6px}
+    .task .actions{display:flex;gap:8px}
+    .pill{padding:6px 9px;border-radius:999px;border:1px solid #e6eefc;font-size:13px;background:white}
+
+    footer.note{text-align:center;color:var(--muted);margin-top:18px;font-size:13px}
+
+    @media(max-width:880px){.grid{grid-template-columns:1fr;}.controls{display:none}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <h1>Shayaan's A‑Level CS Scholarship Roadmap</h1>
+        <p class="lead">Interactive static HTML with calendar, reminders & PDF export — save locally.</p>
+      </div>
+
+      <div class="controls">
+        <button id="exportPdf" class="btn">Export PDF</button>
+        <button id="exportJson" class="btn ghost">Export JSON</button>
+        <button id="addSection" class="btn">+ New Section</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <nav class="card">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:700">Roadmap</div>
+            <div style="font-size:13px;color:var(--muted)">Progress <span id="overallPercent">0%</span></div>
+          </div>
+          <div style="margin-top:10px" class="progress"><i id="overallBar"></i></div>
+        </div>
+
+        <div class="search">
+          <input id="q" class="search" placeholder="Search sections or tasks...">
+        </div>
+
+        <div class="sections" id="sectionList"></div>
+      </nav>
+
+      <main>
+        <div class="card" id="mainCard">
+          <div class="section-header">
+            <input id="sectionTitle" class="title" value="Year 1 — AS Level (Foundation)" />
+            <div style="margin-left:auto;text-align:right">
+              <div style="font-size:12px;color:var(--muted)">Section progress</div>
+              <div style="margin-top:8px" class="progress" style="width:160px"><i id="sectionBar" style="width:0%"></i></div>
+            </div>
+          </div>
+          <div class="desc" contenteditable="true" id="sectionDesc">Build academic base, start competitions, and create early portfolio.</div>
+
+          <div class="task-input">
+            <input id="newTask" placeholder="Add new task (e.g. Start a GitHub project)" />
+            <input id="dueDate" type="date" class="small" />
+            <button id="addTaskBtn" class="btn">Add Task</button>
+          </div>
+
+          <div class="tasks" id="tasks"></div>
+
+          <div style="display:flex;gap:8px;margin-top:14px">
+            <button id="addToCalendarAll" class="pill">Add all with due dates to Google Calendar</button>
+            <button id="enableNotifs" class="pill">Enable Reminders</button>
+          </div>
+
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <h3 style="margin:0 0 8px 0">Quick Checklist</h3>
+          <ul style="margin:0;padding-left:18px;color:var(--muted)">
+            <li>A-Level combo: Mathematics + Further Mathematics + Physics (+ Computer Science)</li>
+            <li>Aim for A*/A in all subjects</li>
+            <li>Enter competitions & build a strong GitHub portfolio</li>
+            <li>Prepare STEP/MAT/TMUA if needed</li>
+            <li>Apply early for scholarships and secure references</li>
+          </ul>
+        </div>
+
+        <footer class="note">This file is fully static — your data is stored in your browser via localStorage. To share, use Export JSON or Export PDF.</footer>
+      </main>
+    </div>
+  </div>
+
+  <!-- External libraries for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // ---------- Initial default data ----------
+    const DEFAULT = [
+      { id: 'year1', title: 'Year 1 — AS Level (Foundation)', desc: 'Build academic base, start competitions, and create early portfolio.', tasks:[
+        {id:'t1',text:'Enroll in Mathematics (A-Level)',due:null,done:false},
+        {id:'t2',text:'Enroll in Further Mathematics (A-Level)',due:null,done:false},
+        {id:'t3',text:'Take Physics (A-Level)',due:null,done:false},
+        {id:'t4',text:'Start small programming projects and push to GitHub',due:null,done:false},
+        {id:'t5',text:'Join coding contests (Codeforces/AtCoder/USACO)',due:null,done:false},
+        {id:'t6',text:'Join Math/Programming club or olympiad training',due:null,done:false}
+      ]},
+      { id: 'year2', title: 'Year 2 — A2 Level', desc: 'Deepen skills, aim for higher competition ranks, build a major project.', tasks:[
+        {id:'t7',text:'Maintain top grades in Maths & Further Maths',due:null,done:false},
+        {id:'t8',text:'Target national/international coding competitions',due:null,done:false},
+        {id:'t9',text:'Create a major project (AI app, mobile app, platform)',due:null,done:false},
+        {id:'t10',text:'Document project with README and demo videos',due:null,done:false},
+        {id:'t11',text:'Network with professors and mentors',due:null,done:false}
+      ]},
+      { id: 'apply', title: 'Application Year', desc: 'Finalize & apply — secure top grades, prepare personal statements, and apply for scholarships.', tasks:[
+        {id:'t12',text:'Obtain predicted grades A*/A',due:null,done:false},
+        {id:'t13',text:'Prepare personal statements tailored per university',due:null,done:false},
+        {id:'t14',text:'Take required entrance exams (STEP/MAT/TMUA) if needed',due:null,done:false},
+        {id:'t15',text:'Ask teachers for strong reference letters',due:null,done:false},
+        {id:'t16',text:'Submit scholarship applications before deadlines',due:null,done:false}
+      ]}
+    ];
+
+    // ---------- Helpers ----------
+    const uid = (p='id') => p+Math.random().toString(36).slice(2,9);
+    const save = (data) => localStorage.setItem('cs_roadmap_v2', JSON.stringify(data));
+    const load = () => JSON.parse(localStorage.getItem('cs_roadmap_v2') || 'null') || DEFAULT;
+
+    let data = load();
+    let activeId = data[0].id;
+
+    // ---------- DOM refs ----------
+    const sectionList = document.getElementById('sectionList');
+    const sectionTitle = document.getElementById('sectionTitle');
+    const sectionDesc = document.getElementById('sectionDesc');
+    const tasksEl = document.getElementById('tasks');
+    const overallBar = document.getElementById('overallBar');
+    const overallPercent = document.getElementById('overallPercent');
+    const sectionBar = document.getElementById('sectionBar');
+    const q = document.getElementById('q');
+
+    // ---------- Render functions ----------
+    function renderSections(filter=''){
+      sectionList.innerHTML = '';
+      data.forEach(s=>{
+        if(filter && !(s.title.toLowerCase().includes(filter) || s.tasks.some(t=>t.text.toLowerCase().includes(filter)))) return;
+        const b = document.createElement('button');
+        b.className = 'secbtn';
+        b.innerHTML = `<div style="font-weight:600">${s.title}</div><div style="font-size:12px;color:var(--muted)">${progressFor(s)}% · ${s.tasks.length} tasks</div>`;
+        b.onclick = ()=>{ activeId = s.id; loadActive(); }
+        sectionList.appendChild(b);
+      });
+    }
+
+    function progressFor(s){ if(!s.tasks.length) return 0; const done = s.tasks.filter(t=>t.done).length; return Math.round((done/s.tasks.length)*100); }
+    function overallProgress(){ const all = data.flatMap(d=>d.tasks); if(!all.length) return 0; const done = all.filter(t=>t.done).length; return Math.round((done/all.length)*100); }
+
+    function loadActive(){
+      const s = data.find(x=>x.id===activeId);
+      if(!s) return;
+      sectionTitle.value = s.title;
+      sectionDesc.innerText = s.desc;
+      renderTasks(s);
+      sectionBar.style.width = progressFor(s)+'%';
+      overallBar.style.width = overallProgress()+'%';
+      overallPercent.innerText = overallProgress()+'%';
+    }
+
+    function renderTasks(s){
+      tasksEl.innerHTML='';
+      s.tasks.forEach(t=>{
+        const el = document.createElement('div'); el.className='task';
+        const cb = document.createElement('div'); cb.className='checkbox'; cb.innerHTML = t.done? '✅':'';
+        cb.onclick = ()=>{ t.done=!t.done; save(data); loadActive(); renderSections(q.value.trim().toLowerCase()); }
+        const meta = document.createElement('div'); meta.className='meta'; meta.innerHTML = `<div class='name'>${t.text}</div><div class='due'>${t.due?('Due: '+t.due):'<span style="color:var(--muted)">No due date</span>'}</div>`;
+        const actions = document.createElement('div'); actions.className='actions';
+        const cal = document.createElement('button'); cal.className='pill'; cal.textContent='Add to Calendar'; cal.onclick=()=> addToCalendar(t);
+        const edit = document.createElement('button'); edit.className='pill'; edit.textContent='Edit'; edit.onclick=()=> editTask(s,t);
+        const del = document.createElement('button'); del.className='pill'; del.textContent='Delete'; del.onclick=()=>{ if(confirm('Delete this task?')){ s.tasks = s.tasks.filter(x=>x.id!==t.id); save(data); renderSections(q.value.trim().toLowerCase()); loadActive(); } };
+        actions.appendChild(cal); actions.appendChild(edit); actions.appendChild(del);
+
+        el.appendChild(cb); el.appendChild(meta); el.appendChild(actions);
+        tasksEl.appendChild(el);
+      });
+    }
+
+    // ---------- Add / Edit tasks ----------
+    document.getElementById('addTaskBtn').addEventListener('click',()=>{
+      const text = document.getElementById('newTask').value.trim();
+      const date = document.getElementById('dueDate').value || null;
+      if(!text) return alert('Please enter a task name');
+      const s = data.find(x=>x.id===activeId);
+      s.tasks.unshift({id:uid('t'),text,done:false,due:date});
+      save(data); document.getElementById('newTask').value=''; document.getElementById('dueDate').value=''; renderSections(q.value.trim().toLowerCase()); loadActive();
+    });
+
+    function editTask(sec, task){
+      const newText = prompt('Edit task name', task.text);
+      if(newText===null) return;
+      const newDue = prompt('Edit due date (YYYY-MM-DD) or leave blank', task.due||'');
+      task.text = newText.trim();
+      task.due = newDue?newDue:null;
+      save(data); loadActive(); renderSections(q.value.trim().toLowerCase());
+    }
+
+    // ---------- Calendar integration ----------
+    function addToCalendar(task){
+      if(!task.due) return alert('Set a due date for this task before adding to calendar.');
+      // Google Calendar expects YYYYMMDD/TIMEZ
+      const start = task.due.replace(/-/g,'') + 'T090000Z';
+      const end = task.due.replace(/-/g,'') + 'T100000Z';
+      const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(task.text)}&dates=${start}/${end}&details=${encodeURIComponent('From your A-Level CS Roadmap')}`;
+      window.open(url,'_blank');
+    }
+
+    document.getElementById('addToCalendarAll').addEventListener('click',()=>{
+      const all = data.flatMap(d=>d.tasks).filter(t=>t.due);
+      if(!all.length) return alert('No tasks with due dates to add.');
+      if(!confirm('This will open a Google Calendar tab for each dated task — continue?')) return;
+      all.forEach((t,i)=> setTimeout(()=> addToCalendar(t), i*500));
+    });
+
+    // ---------- Notifications / reminders ----------
+    let notifEnabled = false;
+    document.getElementById('enableNotifs').addEventListener('click',async ()=>{
+      if(!('Notification' in window)) return alert('Browser notifications not supported.');
+      const perm = await Notification.requestPermission();
+      if(perm!=='granted') return alert('Allow notifications to enable reminders.');
+      notifEnabled = true; scheduleReminders(); alert('Reminders enabled: you will receive a notification 24 hours before each due date if the page is open.');
+    });
+
+    function scheduleReminders(){
+      if(!notifEnabled) return;
+      // clear existing timers by reloading? For simplicity, just set fresh timers
+      const now = Date.now();
+      data.flatMap(d=>d.tasks).forEach(t=>{
+        if(!t.due) return;
+        const when = new Date(t.due+'T09:00:00Z').getTime() - (24*60*60*1000); // 24h before
+        const delay = when - now;
+        if(delay>0 && delay<1000*60*60*24*365){
+          setTimeout(()=> new Notification('Upcoming task: '+t.text,{body:'Due '+t.due}), delay);
+        }
+      });
+    }
+
+    // ---------- Export JSON / PDF ----------
+    document.getElementById('exportJson').addEventListener('click',()=>{
+      const payload = JSON.stringify(data, null, 2);
+      const blob = new Blob([payload], {type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'cs_roadmap.json'; a.click(); URL.revokeObjectURL(a.href);
+    });
+
+    document.getElementById('exportPdf').addEventListener('click', async ()=>{
+      const main = document.querySelector('.wrap');
+      const canvas = await html2canvas(main, {scale:2});
+      const img = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({orientation:'portrait',unit:'px',format:[canvas.width, canvas.height]});
+      pdf.addImage(img,'PNG',0,0,canvas.width, canvas.height);
+      pdf.save('cs_roadmap.pdf');
+    });
+
+    // ---------- Section management ----------
+    document.getElementById('addSection').addEventListener('click',()=>{
+      const id = uid('sec'); const title = prompt('Section title','New Section'); if(!title) return;
+      data.unshift({id,title,desc:'Describe this section.',tasks:[]}); save(data); renderSections(q.value.trim().toLowerCase()); activeId = data[0].id; loadActive();
+    });
+
+    sectionTitle.addEventListener('input',()=>{ const s = data.find(x=>x.id===activeId); s.title = sectionTitle.value; save(data); renderSections(q.value.trim().toLowerCase()); });
+    sectionDesc.addEventListener('input',()=>{ const s = data.find(x=>x.id===activeId); s.desc = sectionDesc.innerText; save(data); });
+
+    q.addEventListener('input',()=> renderSections(q.value.trim().toLowerCase()));
+
+    // ---------- Init ----------
+    renderSections(); loadActive(); scheduleReminders();
+
+    // Expose data for debugging (optional)
+    window.__CS_ROADMAP = {get:()=>data,set:(d)=>{data=d;save(d);renderSections();loadActive();}};
+  </script>
+</body>
+</html>
